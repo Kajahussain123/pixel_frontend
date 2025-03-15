@@ -257,6 +257,7 @@ const BuyNowForm = () => {
             paymentData.append("razorpay_order_id", response.razorpay_order_id);
             paymentData.append("razorpay_payment_id", response.razorpay_payment_id);
             paymentData.append("userId", userId);
+            paymentData.append("name", name);
             paymentData.append("noOfPixels", pixelCount);
             paymentData.append("companyName", companyName);
             paymentData.append("email", email);

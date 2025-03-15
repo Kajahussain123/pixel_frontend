@@ -111,10 +111,11 @@ const Signup = () => {
             fullWidth
             label="Email"
             variant="outlined"
-            onChange={handleChange}
+            onChange={(e) => handleChange({ target: { name: e.target.name, value: e.target.value.toLowerCase() } })}
             error={!!errors.email}
             helperText={errors.email}
           />
+
           <TextField
             name="password"
             fullWidth
