@@ -191,7 +191,18 @@ const BuyNowForm = () => {
 
   const handleSubmit = async () => {
     if (!userId) {
-      alert("User ID is missing. Please log in again.");
+      toast.error("User ID is missing. Please log in again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    if (!name || !email || !phone || !country || !companyName || !organicLead  || mediaFiles.length === 0) {
+      toast.error("Please fill all required fields before submitting.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
       return;
     }
 
@@ -321,6 +332,7 @@ const BuyNowForm = () => {
               fullWidth
               label="Your name"
               variant="outlined"
+              required
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -331,6 +343,7 @@ const BuyNowForm = () => {
               label="Email"
               variant="outlined"
               value={email}
+              required
               onChange={(e) => setEmail(e.target.value)}
             />
           </Grid>
@@ -339,6 +352,7 @@ const BuyNowForm = () => {
               fullWidth
               label="Phone number"
               variant="outlined"
+              required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
@@ -371,6 +385,7 @@ const BuyNowForm = () => {
               fullWidth
               label="No of pixels"
               variant="outlined"
+              required
               type="number"
               value={pixelCount}
               onChange={handlePixelChange}
@@ -383,6 +398,7 @@ const BuyNowForm = () => {
             <TextField
               fullWidth
               label="Company name"
+              required
               variant="outlined"
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
@@ -443,6 +459,7 @@ const BuyNowForm = () => {
             <TextField
               fullWidth
               label="Organic lead"
+              required
               variant="outlined"
               placeholder="You can paste your profile link or website link"
               value={organicLead}
