@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, InputAdornment, IconButton } from "@mui/material";
+import { Box, TextField, Button, Typography, InputAdornment, IconButton, CircularProgress } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { toast, ToastContainer } from "react-toastify";
@@ -16,6 +16,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState({ name: "", email: "", password: "" });
   const navigate = useNavigate();
+  const [isSigningUp, setIsSigningUp] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,12 +60,17 @@ const Signup = () => {
       return;
     }
 
+    setIsSigningUp(true); // Start loading
     try {
       const response = await register(formData);
       toast.success("OTP sent to your email!", { position: "top-right" });
-      navigate("/verify-otp", { state: { email: formData.email } });
+      setTimeout(() => {
+        navigate("/verify-otp", { state: { email: formData.email } });
+      }, 1000);
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed!", { position: "top-right" });
+    } finally {
+      setIsSigningUp(false); // Stop loading
     }
   };
 
@@ -144,9 +150,10 @@ const Signup = () => {
               fontWeight: "bold",
               "&:hover": { backgroundColor: "#16a34a" },
             }}
+            disabled={isSigningUp} 
             onClick={handleSubmit}
           >
-            Sign up
+           {isSigningUp ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Sign up"}
           </Button>
           <Button
             fullWidth

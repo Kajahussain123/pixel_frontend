@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, TextField, Button, Typography, InputAdornment, IconButton, styled } from "@mui/material";
+import { Box, TextField, Button, Typography, InputAdornment, IconButton, styled, CircularProgress } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Header from "../Components/Header";
@@ -23,6 +23,7 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(true);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,14 +62,19 @@ const Login = () => {
 
   const handleSubmit = async () => {
     if (validateForm()) {
+      setIsLoggingIn(true); // Start loading on button
       try {
         const data = await login(formData);
         localStorage.setItem("userId", data.user.id);
         localStorage.setItem("token", data.token);
         toast.success("Login successful!", { position: "top-right" });
-        navigate("/");
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
       } catch (error) {
         toast.error("Login failed. Please check your Email or Password.", { position: "top-right" });
+      } finally {
+        setIsLoggingIn(false); // Stop loading
       }
     }
   };
@@ -156,8 +162,7 @@ const Login = () => {
                   ),
                 }}
               />
-
-              <Button
+ <Button
                 fullWidth
                 variant="contained"
                 sx={{
@@ -167,10 +172,10 @@ const Login = () => {
                   "&:hover": { backgroundColor: "#16a34a" },
                 }}
                 onClick={handleSubmit}
+                disabled={isLoggingIn} // Disable button while loading
               >
-                Login
+                {isLoggingIn ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Login"}
               </Button>
-
               {/* Google Login Button */}
               <Button
                 fullWidth
