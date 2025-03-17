@@ -174,8 +174,9 @@ const Login = () => {
                 onClick={handleSubmit}
                 disabled={isLoggingIn} // Disable button while loading
               >
-                {isLoggingIn ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Login"}
-              </Button>
+                {isLoggingIn ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Login"} 
+              </Button> 
+              {/* testing */}
               {/* Google Login Button */}
               <Button
                 fullWidth
