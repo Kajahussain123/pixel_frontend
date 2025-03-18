@@ -22,7 +22,7 @@ const ViewOrders = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // State to control the delete confirmation dialog
   const [expandedMessageId, setExpandedMessageId] = useState(null);
 
-  
+
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -192,6 +192,7 @@ const ViewOrders = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+              <TableCell style={{ whiteSpace: 'nowrap', textAlign: 'center' }}><b>#</b></TableCell>
               <TableCell style={{ whiteSpace: 'nowrap', textAlign: 'center' }}><b>Name</b></TableCell>
               <TableCell style={{ whiteSpace: 'nowrap', textAlign: 'center' }}><b>Mobile Number</b></TableCell>
               <TableCell style={{ whiteSpace: 'nowrap', textAlign: 'center' }}><b>Email</b></TableCell>
@@ -206,8 +207,11 @@ const ViewOrders = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedOrders.map((order) => (
+            {paginatedOrders.map((order, index) => (
               <TableRow key={order._id} sx={{ '& td': { borderColor: '#f0f0f0' } }}>
+                <TableCell style={{ textAlign: 'center' }}>
+                  {(page - 1) * rowsPerPage + index + 1}
+                </TableCell>
                 <TableCell>{order.name}</TableCell>
                 <TableCell>{order.phone}</TableCell>
                 <TableCell>{order.email}</TableCell>
