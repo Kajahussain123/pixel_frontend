@@ -7,7 +7,7 @@ import WhatWeOfferSection from '../Components/Home/Section4';
 import Footer from '../Components/Footer';
 import Loader from '../Components/Loader/Loader';
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 
 function Home() {
@@ -53,6 +53,7 @@ function Home() {
       ) : (
         <>
           <Header />
+           <ToastContainer />
           <Section1 />
           <EventDetails />
           <EventSection />

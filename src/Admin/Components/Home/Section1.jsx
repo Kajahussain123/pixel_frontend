@@ -48,55 +48,59 @@ const Graphs = () => {
     <Grid container spacing={3} sx={{ maxWidth: 900, width: "100%", padding: "30px"  }}>
       
       {/* Orders Increment (Pie Chart) */}
-      <Grid item xs={12} md={6}>
-        <Paper elevation={3} sx={{ p: 3, borderRadius: 3, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Box>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              Orders Increment
-            </Typography>
-            <Typography variant="body2" sx={{ color: "gray" }}>
-              This pie chart shows the total number of order increments this month.
-            </Typography>
-          </Box>
-          <ResponsiveContainer width={150} height={150}>
-            <PieChart>
-              <Pie
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                innerRadius={40}
-                outerRadius={50}
-                fill="#2CA35C"
-                dataKey="value"
-                label={renderLabel}
-                labelLine={false}
-              >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </Paper>
-      </Grid>
+      <Grid item xs={12} md={6} sx={{ display: "flex", alignItems: "stretch" }}>
+  <Paper elevation={3} sx={{ p: 3, borderRadius: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}>
+    <Box>
+      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+        Orders Increment
+      </Typography>
+      <Typography variant="body2" sx={{ color: "gray" }}>
+        This pie chart shows the total number of order increments this month.
+      </Typography>
+    </Box>
+    <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <ResponsiveContainer width={150} height={150}>
+        <PieChart>
+          <Pie
+            data={pieData}
+            cx="50%"
+            cy="50%"
+            innerRadius={40}
+            outerRadius={50}
+            fill="#2CA35C"
+            dataKey="value"
+            label={renderLabel}
+            labelLine={false}
+          >
+            {pieData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
+    </Box>
+  </Paper>
+</Grid>
 
-      {/* Total Revenue (Line Chart) */}
-      <Grid item xs={12} md={6}>
-        <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
-            Total Revenue
-          </Typography>
-          <ResponsiveContainer width="100%" height={150}>
-            <LineChart data={revenueData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="month" />
-              <YAxis tickFormatter={(value) => `$ ${value / 1000}k`} />
-              <Tooltip />
-              <Line type="monotone" dataKey="revenue" stroke="#2CA35C" strokeWidth={2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </Paper>
-      </Grid>
+<Grid item xs={12} md={6} sx={{ display: "flex", alignItems: "stretch" }}>
+  <Paper elevation={3} sx={{ p: 3, borderRadius: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}>
+    <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+      Total Revenue
+    </Typography>
+    <Box sx={{ flexGrow: 1 }}>
+      <ResponsiveContainer width="100%" height={150}>
+        <LineChart data={revenueData}>
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <XAxis dataKey="month" />
+          <YAxis tickFormatter={(value) => `$ ${value / 1000}k`} />
+          <Tooltip />
+          <Line type="monotone" dataKey="revenue" stroke="#2CA35C" strokeWidth={2} dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </Box>
+  </Paper>
+</Grid>
+
 
     </Grid>
   );
