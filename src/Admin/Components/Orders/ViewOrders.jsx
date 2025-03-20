@@ -275,20 +275,32 @@ const ViewOrders = () => {
 
       {/* Modal for File Preview */}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Box sx={{ p: 4, backgroundColor: 'white', width: '60%', margin: 'auto', mt: 5, borderRadius: 2 }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>File Previews</Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {selectedFiles.map((file, index) => (
-              <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <img src={`${BASE_URL}/${file}`} alt={`Preview ${index}`} style={{ width: 100, height: 100, borderRadius: 1, objectFit: 'cover', marginBottom: '8px' }} />
-                <Button variant="contained" size="small" href={`${BASE_URL}/${file}`} target="_blank" download>
-                  Download
-                </Button>
-              </Box>
-            ))}
+  <Box sx={{ p: 4, backgroundColor: 'white', width: '60%', margin: 'auto', mt: 5, borderRadius: 2 }}>
+    <Typography variant="h6" sx={{ mb: 2 }}>File Previews</Typography>
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+      {selectedFiles.map((file, index) => {
+        const fileExtension = file.split('.').pop().toLowerCase();
+        const isVideo = ['mp4', 'webm', 'ogg'].includes(fileExtension);
+
+        return (
+          <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {isVideo ? (
+              <video controls style={{ width: 100, height: 100, borderRadius: 1, objectFit: 'cover', marginBottom: '8px' }}>
+                <source src={`${BASE_URL}/${file}`} type={`video/${fileExtension}`} />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <img src={`${BASE_URL}/${file}`} alt={`Preview ${index}`} style={{ width: 100, height: 100, borderRadius: 1, objectFit: 'cover', marginBottom: '8px' }} />
+            )}
+            <Button variant="contained" size="small" href={`${BASE_URL}/${file}`} target="_blank" download>
+              Download
+            </Button>
           </Box>
-        </Box>
-      </Modal>
+        );
+      })}
+    </Box>
+  </Box>
+</Modal>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>

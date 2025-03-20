@@ -310,11 +310,17 @@ const BuyNowForm = () => {
       rzp.open();
     } catch (error) {
       console.error("Failed to place order:", error);
-      toast.error("Failed to place order. Please try again.", {
-        position: "top-right",
-        autoClose: 3000,
+  
+      // Check if error response exists and contains the message
+      const errorMessage = error.response?.data?.message || "Failed to place order. Please try again.";
+  
+      // Show the exact message from the backend (e.g., "Only 2 pixel(s) available")
+      toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 3000,
       });
-    } finally {
+  }
+   finally {
       setIsLoading(false);
     }
   };

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, Typography, Container, Divider, Stack, Link } from '@mui/material';
+import { Box, Typography, Container, Divider, Stack, Link, IconButton } from '@mui/material';
+import { LinkedIn, Instagram, Twitter } from '@mui/icons-material'; // Import social icons
 
 const Footer = () => {
   return (
-    <Box sx={{ bgcolor: '#f5f5f5', pt: 4, pb: 3 }}>
+    <Box sx={{ bgcolor: '#f5f5f5', pb: 3 }}>
       <Container maxWidth="lg">
         {/* Divider line */}
         <Divider sx={{ mb: 4 }} />
@@ -41,8 +42,20 @@ const Footer = () => {
                 For Enquiries: plantmyad@gmail.com
               </Typography>
             </Stack>
-          </Box>
 
+            {/* Social Media Icons */}
+            <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
+              <IconButton href="https://www.linkedin.com/company/plantmyad/" target="_blank" sx={{ color: "#0077b5" }}>
+                <LinkedIn />
+              </IconButton>
+              <IconButton href="https://www.instagram.com/plantmyad?igsh=MTF0b2h5c25oaWFtaw%3D%3D" target="_blank" sx={{ color: "#e4405f" }}>
+                <Instagram />
+              </IconButton>
+              <IconButton href="https://x.com/plantmyad?t=wI7esgDEOXfZQaWGIUVz7w&s=08" target="_blank" sx={{ color: "#1da1f2" }}>
+                <Twitter />
+              </IconButton>
+            </Stack>
+          </Box>
 
           {/* Right side with links */}
           <Stack
@@ -50,15 +63,15 @@ const Footer = () => {
             spacing={{ xs: 1, md: 2 }}
             alignItems={{ xs: 'flex-start', md: 'center' }}
           >
-            <Typography variant="body2" color="text.secondary" style={{ fontFamily: "'Playfair Display', serif", }}>
-              All rights Reserved | copyrights 2025
+            <Typography variant="body2" color="text.secondary" sx={{ fontFamily: "'Playfair Display', serif" }}>
+              All rights Reserved | Copyright © 2025
             </Typography>
             <Link
               href="/privacy"
               underline="hover"
               color="text.secondary"
               variant="body2"
-              style={{ fontFamily: "'Playfair Display', serif", }}
+              sx={{ fontFamily: "'Playfair Display', serif" }}
             >
               Privacy Policy
             </Link>
@@ -67,7 +80,7 @@ const Footer = () => {
               underline="hover"
               color="text.secondary"
               variant="body2"
-              style={{ fontFamily: "'Playfair Display', serif", }}
+              sx={{ fontFamily: "'Playfair Display', serif" }}
             >
               Terms and Conditions
             </Link>
