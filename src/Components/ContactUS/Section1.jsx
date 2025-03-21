@@ -18,9 +18,9 @@ const ContactUs = () => {
   const handleSendMessage = () => {
     const { name, email, subject, message } = formData;
     
-    const whatsappMessage = `Hello, my name is ${name}.%0A
-    Email: ${email}%0A
-    Subject: ${subject}%0A
+    const whatsappMessage = `Hello, my name is ${name}
+    Email: ${email}
+    Subject: ${subject}
     Message: ${message}`;
 
     const encodedMessage = encodeURIComponent(whatsappMessage);
