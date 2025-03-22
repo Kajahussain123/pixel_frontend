@@ -1,11 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, InputAdornment, Modal, Pagination, FormControlLabel, Checkbox, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  InputAdornment,
+  Modal,
+  TablePagination,
+  FormControlLabel,
+  Checkbox,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 import { Search, Delete } from '@mui/icons-material';
 import { deleteOrder, viewAllOrders } from '../../../Services/allApi';
 import { BASE_URL } from '../../../Services/baseUrl';
 import * as XLSX from 'xlsx'; // Import the xlsx library
-
-
 
 const ViewOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -13,16 +33,14 @@ const ViewOrders = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(20);
+  const [page, setPage] = useState(0); // Pagination state
+  const [rowsPerPage, setRowsPerPage] = useState(20); // Rows per page state
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [isAdminOrderFilter, setIsAdminOrderFilter] = useState(false);
   const [deleteOrderId, setDeleteOrderId] = useState(null); // State to store the order ID to delete
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // State to control the delete confirmation dialog
   const [expandedMessageId, setExpandedMessageId] = useState(null);
-
-
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -63,6 +81,11 @@ const ViewOrders = () => {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when rows per page is changed
   };
 
   const handleExport = () => {
@@ -108,8 +131,6 @@ const ViewOrders = () => {
     setDeleteOrderId(orderId); // Set the order ID to delete
     setOpenDeleteDialog(true); // Open the confirmation dialog
   };
-
-  const paginatedOrders = filteredOrders.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   return (
     <Box sx={{ p: 4 }}>
@@ -207,100 +228,102 @@ const ViewOrders = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedOrders.map((order, index) => (
-              <TableRow key={order._id} sx={{ '& td': { borderColor: '#f0f0f0' } }}>
-                <TableCell style={{ textAlign: 'center' }}>
-                  {(page - 1) * rowsPerPage + index + 1}
-                </TableCell>
-                <TableCell>{order.name}</TableCell>
-                <TableCell>{order.phone}</TableCell>
-                <TableCell>{order.email}</TableCell>
-                <TableCell>{order.country}</TableCell>
-                <TableCell>{order.noOfPixels}</TableCell>
-                <TableCell>{order.companyName}</TableCell>
-                <TableCell>{order.organicLead}</TableCell>
-                <TableCell>{order.organicLead}</TableCell>
-                <TableCell>
-                  {order.message.length > 50 ? (
-                    <>
-                      {expandedMessageId === order._id ? (
-                        <>
-                          {order.message}
-                          <Button size="small" onClick={() => setExpandedMessageId(null)}>View Less</Button>
-                        </>
-                      ) : (
-                        <>
-                          {order.message.slice(0, 50)}...
-                          <Button size="small" onClick={() => setExpandedMessageId(order._id)}>View More</Button>
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    order.message
-                  )}
-                </TableCell>
-                <TableCell>
-                  {order.file.length > 0 ? (
-                    <Button variant="outlined" size="small" onClick={() => handleViewFiles(order.file)}>
-                      View Files
-                    </Button>
-                  ) : (
-                    'No Files'
-                  )}
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    size="small"
-                    sx={{ color: '#d32f2f', ml: 1 }}
-                    onClick={() => handleDeleteClick(order._id)} // Trigger delete confirmation
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredOrders
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((order, index, array) => (
+                <TableRow key={order._id} sx={{ '& td': { borderColor: '#f0f0f0' } }}>
+                  <TableCell style={{ textAlign: 'center' }}>
+                    {array.length - index + page * rowsPerPage}
+                  </TableCell>
+                  <TableCell>{order.name}</TableCell>
+                  <TableCell>{order.phone}</TableCell>
+                  <TableCell>{order.email}</TableCell>
+                  <TableCell>{order.country}</TableCell>
+                  <TableCell>{order.noOfPixels}</TableCell>
+                  <TableCell>{order.companyName}</TableCell>
+                  <TableCell>{order.organicLead}</TableCell>
+                  <TableCell>{order.organicLead}</TableCell>
+                  <TableCell>
+                    {order.message.length > 50 ? (
+                      <>
+                        {expandedMessageId === order._id ? (
+                          <>
+                            {order.message}
+                            <Button size="small" onClick={() => setExpandedMessageId(null)}>View Less</Button>
+                          </>
+                        ) : (
+                          <>
+                            {order.message.slice(0, 50)}...
+                            <Button size="small" onClick={() => setExpandedMessageId(order._id)}>View More</Button>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      order.message
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {order.file.length > 0 ? (
+                      <Button variant="outlined" size="small" onClick={() => handleViewFiles(order.file)}>
+                        View Files
+                      </Button>
+                    ) : (
+                      'No Files'
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      size="small"
+                      sx={{ color: '#d32f2f', ml: 1 }}
+                      onClick={() => handleDeleteClick(order._id)} // Trigger delete confirmation
+                    >
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
 
       {/* Pagination */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-        <Pagination
-          count={Math.ceil(filteredOrders.length / rowsPerPage)}
-          page={page}
-          onChange={handleChangePage}
-          color="primary"
-        />
-      </Box>
+      <TablePagination
+        component="div"
+        count={filteredOrders.length}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
 
       {/* Modal for File Preview */}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
-  <Box sx={{ p: 4, backgroundColor: 'white', width: '60%', margin: 'auto', mt: 5, borderRadius: 2 }}>
-    <Typography variant="h6" sx={{ mb: 2 }}>File Previews</Typography>
-    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-      {selectedFiles.map((file, index) => {
-        const fileExtension = file.split('.').pop().toLowerCase();
-        const isVideo = ['mp4', 'webm', 'ogg'].includes(fileExtension);
+        <Box sx={{ p: 4, backgroundColor: 'white', width: '60%', margin: 'auto', mt: 5, borderRadius: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>File Previews</Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {selectedFiles.map((file, index) => {
+              const fileExtension = file.split('.').pop().toLowerCase();
+              const isVideo = ['mp4', 'webm', 'ogg'].includes(fileExtension);
 
-        return (
-          <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {isVideo ? (
-              <video controls style={{ width: 100, height: 100, borderRadius: 1, objectFit: 'cover', marginBottom: '8px' }}>
-                <source src={`${BASE_URL}/${file}`} type={`video/${fileExtension}`} />
-                Your browser does not support the video tag.
-              </video>
-            ) : (
-              <img src={`${BASE_URL}/${file}`} alt={`Preview ${index}`} style={{ width: 100, height: 100, borderRadius: 1, objectFit: 'cover', marginBottom: '8px' }} />
-            )}
-            <Button variant="contained" size="small" href={`${BASE_URL}/${file}`} target="_blank" download>
-              Download
-            </Button>
+              return (
+                <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {isVideo ? (
+                    <video controls style={{ width: 100, height: 100, borderRadius: 1, objectFit: 'cover', marginBottom: '8px' }}>
+                      <source src={`${BASE_URL}/${file}`} type={`video/${fileExtension}`} />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <img src={`${BASE_URL}/${file}`} alt={`Preview ${index}`} style={{ width: 100, height: 100, borderRadius: 1, objectFit: 'cover', marginBottom: '8px' }} />
+                  )}
+                  <Button variant="contained" size="small" href={`${BASE_URL}/${file}`} target="_blank" download>
+                    Download
+                  </Button>
+                </Box>
+              );
+            })}
           </Box>
-        );
-      })}
-    </Box>
-  </Box>
-</Modal>
+        </Box>
+      </Modal>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
