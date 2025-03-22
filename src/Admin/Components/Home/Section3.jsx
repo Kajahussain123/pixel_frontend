@@ -18,7 +18,7 @@ const OrdersTable = () => {
       } catch (error) {
         setError('Failed to load orders');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     };
     fetchOrders();
@@ -49,36 +49,43 @@ const OrdersTable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders.map((order) => (
-                <TableRow key={order._id} sx={{ '& td': { borderColor: '#f0f0f0' } }}>
-                  <TableCell sx={{ color: '#666' }}>{order.name}</TableCell>
-                  <TableCell sx={{ color: '#666' }}>{order.email}</TableCell>
-                  <TableCell sx={{ color: '#666' }}>{order.noOfPixels}</TableCell>
+              {orders.length > 0 ? (
+                orders.map((order) => (
+                  <TableRow key={order._id} sx={{ '& td': { borderColor: '#f0f0f0' } }}>
+                    <TableCell sx={{ color: '#666' }}>{order.name}</TableCell>
+                    <TableCell sx={{ color: '#666' }}>{order.email}</TableCell>
+                    <TableCell sx={{ color: '#666' }}>{order.noOfPixels}</TableCell>
 
-                  {/* Payment Method OR Payment Received Status */}
-                  <TableCell sx={{ color: '#666' }}>
-                    {order.isAdminOrder ? (
-                      <Typography sx={{ fontWeight: 500, color: order.paymentReceived ? '#4CAF50' : '#F44336' }}>
-                        {order.paymentReceived ? 'Received' : 'Not Received'}
+                    {/* Payment Method OR Payment Received Status */}
+                    <TableCell sx={{ color: '#666' }}>
+                      {order.isAdminOrder ? (
+                        <Typography sx={{ fontWeight: 500, color: order.paymentReceived ? '#4CAF50' : '#F44336' }}>
+                          {order.paymentReceived ? 'Received' : 'Not Received'}
+                        </Typography>
+                      ) : (
+                        order.paymentMethod || 'N/A'
+                      )}
+                    </TableCell>
+
+                    <TableCell sx={{ color: '#666' }}>{order.totalPrice} $</TableCell>
+                    <TableCell>
+                      <Typography sx={{ color: '#4CAF50', fontWeight: 500 }}>
+                        {order.paymentStatus}
                       </Typography>
-                    ) : (
-                      order.paymentMethod || 'N/A'
-                    )}
-                  </TableCell>
-
-                  <TableCell sx={{ color: '#666' }}>{order.totalPrice} $</TableCell>
-                  <TableCell>
-                    <Typography sx={{ color: '#4CAF50', fontWeight: 500 }}>
-                      {order.paymentStatus}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ color: '#666' }}>
-                    {new Date(order.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell sx={{ color: '#666' }}>
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7} sx={{ textAlign: 'center', color: 'gray', py: 3 }}>
+                    No Data Found
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
-
           </Table>
         </TableContainer>
       )}

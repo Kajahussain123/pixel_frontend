@@ -225,33 +225,43 @@ const UserManagement = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredUsers
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((user, index,array) => (
-                  <TableRow key={user._id} sx={{ "& td": { borderColor: "#f0f0f0" } }}>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      {array.length - index + page * rowsPerPage}
-                    </TableCell>                  <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleOpen(user)}>
-                        <Message sx={{ color: "#666" }} />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell>{user.isVerified ? "Yes" : "No"}</TableCell>
-                    <TableCell>{user.is_active ? "Yes" : "No"}</TableCell>
-                    <TableCell>
-                      <IconButton
-                        size="small"
-                        onClick={() => handleDeleteClick(user)}
-                        sx={{ color: "#ff4444" }}
-                      >
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
+  {filteredUsers.length > 0 ? (
+    filteredUsers
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((user, index, array) => (
+        <TableRow key={user._id} sx={{ "& td": { borderColor: "#f0f0f0" } }}>
+          <TableCell style={{ textAlign: "center" }}>
+            {array.length - index + page * rowsPerPage}
+          </TableCell>
+          <TableCell>{user.name}</TableCell>
+          <TableCell>{user.email}</TableCell>
+          <TableCell>
+            <IconButton onClick={() => handleOpen(user)}>
+              <Message sx={{ color: "#666" }} />
+            </IconButton>
+          </TableCell>
+          <TableCell>{user.isVerified ? "Yes" : "No"}</TableCell>
+          <TableCell>{user.is_active ? "Yes" : "No"}</TableCell>
+          <TableCell>
+            <IconButton
+              size="small"
+              onClick={() => handleDeleteClick(user)}
+              sx={{ color: "#ff4444" }}
+            >
+              <Delete />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={7} sx={{ textAlign: "center", color: "gray", py: 3 }}>
+        No Data Found
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
           </Table>
         </TableContainer>
 

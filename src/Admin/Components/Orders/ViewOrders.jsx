@@ -228,61 +228,70 @@ const ViewOrders = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredOrders
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((order, index, array) => (
-                <TableRow key={order._id} sx={{ '& td': { borderColor: '#f0f0f0' } }}>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {array.length - index + page * rowsPerPage}
-                  </TableCell>
-                  <TableCell>{order.name}</TableCell>
-                  <TableCell>{order.phone}</TableCell>
-                  <TableCell>{order.email}</TableCell>
-                  <TableCell>{order.country}</TableCell>
-                  <TableCell>{order.noOfPixels}</TableCell>
-                  <TableCell>{order.companyName}</TableCell>
-                  <TableCell>{order.organicLead}</TableCell>
-                  <TableCell>{order.organicLead}</TableCell>
-                  <TableCell>
-                    {order.message.length > 50 ? (
-                      <>
-                        {expandedMessageId === order._id ? (
-                          <>
-                            {order.message}
-                            <Button size="small" onClick={() => setExpandedMessageId(null)}>View Less</Button>
-                          </>
-                        ) : (
-                          <>
-                            {order.message.slice(0, 50)}...
-                            <Button size="small" onClick={() => setExpandedMessageId(order._id)}>View More</Button>
-                          </>
-                        )}
-                      </>
-                    ) : (
-                      order.message
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {order.file.length > 0 ? (
-                      <Button variant="outlined" size="small" onClick={() => handleViewFiles(order.file)}>
-                        View Files
-                      </Button>
-                    ) : (
-                      'No Files'
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      size="small"
-                      sx={{ color: '#d32f2f', ml: 1 }}
-                      onClick={() => handleDeleteClick(order._id)} // Trigger delete confirmation
-                    >
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
+  {filteredOrders.length > 0 ? (
+    filteredOrders
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      .map((order, index, array) => (
+        <TableRow key={order._id} sx={{ '& td': { borderColor: '#f0f0f0' } }}>
+          <TableCell style={{ textAlign: 'center' }}>
+            {array.length - index + page * rowsPerPage}
+          </TableCell>
+          <TableCell>{order.name}</TableCell>
+          <TableCell>{order.phone}</TableCell>
+          <TableCell>{order.email}</TableCell>
+          <TableCell>{order.country}</TableCell>
+          <TableCell>{order.noOfPixels}</TableCell>
+          <TableCell>{order.companyName}</TableCell>
+          <TableCell>{order.organicLead}</TableCell>
+          <TableCell>{order.organicLead}</TableCell>
+          <TableCell>
+            {order.message.length > 50 ? (
+              <>
+                {expandedMessageId === order._id ? (
+                  <>
+                    {order.message}
+                    <Button size="small" onClick={() => setExpandedMessageId(null)}>View Less</Button>
+                  </>
+                ) : (
+                  <>
+                    {order.message.slice(0, 50)}...
+                    <Button size="small" onClick={() => setExpandedMessageId(order._id)}>View More</Button>
+                  </>
+                )}
+              </>
+            ) : (
+              order.message
+            )}
+          </TableCell>
+          <TableCell>
+            {order.file.length > 0 ? (
+              <Button variant="outlined" size="small" onClick={() => handleViewFiles(order.file)}>
+                View Files
+              </Button>
+            ) : (
+              'No Files'
+            )}
+          </TableCell>
+          <TableCell>
+            <IconButton
+              size="small"
+              sx={{ color: '#d32f2f', ml: 1 }}
+              onClick={() => handleDeleteClick(order._id)}
+            >
+              <Delete />
+            </IconButton>
+          </TableCell>
+        </TableRow>
+      ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={12} sx={{ textAlign: 'center', color: 'gray', py: 3 }}>
+        No Data Found
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
         </Table>
       </TableContainer>
 
