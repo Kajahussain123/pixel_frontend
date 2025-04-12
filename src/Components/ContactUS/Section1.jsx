@@ -54,7 +54,7 @@ const ContactUs = () => {
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
                 <LocationOn sx={{ mr: 1 }} />
-                <Typography>India</Typography>
+                <Typography>Plakkad,Kerala,India</Typography>
               </Box>
 
               {/* Social Media Icons */}

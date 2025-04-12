@@ -355,14 +355,19 @@ const BuyNowForm = () => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Phone number"
-              variant="outlined"
-              required
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
+          <TextField
+  fullWidth
+  label="Phone number"
+  variant="outlined"
+  required
+  type="tel"
+  value={phone}
+  onChange={(e) => {
+    const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+    setPhone(onlyNums);
+  }}
+/>
+
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
