@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom'; // For redirection
 import { toast, ToastContainer } from 'react-toastify'; // For toast messages
 import 'react-toastify/dist/ReactToastify.css'; // Toast styles
-import {  buyNow, verifyPayment } from '../../Services/allApi'; // Replace addToCart with buyNow API
+import { buyNow, verifyPayment } from '../../Services/allApi'; // Replace addToCart with buyNow API
 
 const StyledPaper = styled(Paper)({
   padding: '30px',
@@ -80,34 +80,47 @@ const BuyNowForm = () => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch("https://restcountries.com/v3.1/all");
+        // Add fields parameter to request only needed data
+        const response = await fetch("https://restcountries.com/v3.1/all?fields=name,cca2,flags,currencies");
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
+
         const countryList = data.map((country) => {
-          // Ensure 'currencies' exist before accessing it
-          const currencyCode = country.currencies ? Object.keys(country.currencies)[0] : null;
-          const currencySymbol = currencyCode && country.currencies[currencyCode] ? country.currencies[currencyCode].symbol : null;
+          const currency = country.currencies ? Object.values(country.currencies)[0] : null;
 
           return {
             code: country.cca2,
             name: country.name.common,
-            flag: country.flags?.svg || "", // Handle missing flag
-            currencyCode: currencyCode || "N/A", // Default to "N/A" if missing
-            currencySymbol: currencySymbol || "$", // Default to "N/A" if missing
+            flag: country.flags?.svg || country.flags?.png || "",
+            currencyCode: currency?.code || "USD", // Default to USD
+            currencySymbol: currency?.symbol || "$", // Default to $
           };
         });
-
 
         // Sort countries alphabetically
         countryList.sort((a, b) => a.name.localeCompare(b.name));
         setCountries(countryList);
       } catch (error) {
         console.error("Error fetching countries:", error);
+        // Set default country list if API fails
+        setCountries([
+          {
+            code: 'US',
+            name: 'United States',
+            flag: 'https://flagcdn.com/us.svg',
+            currencyCode: 'USD',
+            currencySymbol: '$'
+          }
+        ]);
       }
     };
 
     fetchCountries();
   }, []);
-
 
 
   const handlePixelChange = (event) => {
@@ -198,7 +211,7 @@ const BuyNowForm = () => {
       return;
     }
 
-    if (!name || !email || !phone || !country || !companyName || !organicLead  || mediaFiles.length === 0) {
+    if (!name || !email || !phone || !country || !companyName || !organicLead || mediaFiles.length === 0) {
       toast.error("Please fill all required fields before submitting.", {
         position: "top-right",
         autoClose: 3000,
@@ -310,17 +323,17 @@ const BuyNowForm = () => {
       rzp.open();
     } catch (error) {
       console.error("Failed to place order:", error);
-  
+
       // Check if error response exists and contains the message
       const errorMessage = error.response?.data?.message || "Failed to place order. Please try again.";
-  
+
       // Show the exact message from the backend (e.g., "Only 2 pixel(s) available")
       toast.error(errorMessage, {
-          position: "top-right",
-          autoClose: 3000,
+        position: "top-right",
+        autoClose: 3000,
       });
-  }
-   finally {
+    }
+    finally {
       setIsLoading(false);
     }
   };
@@ -355,18 +368,18 @@ const BuyNowForm = () => {
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-          <TextField
-  fullWidth
-  label="Phone number"
-  variant="outlined"
-  required
-  type="tel"
-  value={phone}
-  onChange={(e) => {
-    const onlyNums = e.target.value.replace(/[^0-9]/g, '');
-    setPhone(onlyNums);
-  }}
-/>
+            <TextField
+              fullWidth
+              label="Phone number"
+              variant="outlined"
+              required
+              type="tel"
+              value={phone}
+              onChange={(e) => {
+                const onlyNums = e.target.value.replace(/[^0-9]/g, '');
+                setPhone(onlyNums);
+              }}
+            />
 
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -375,19 +388,40 @@ const BuyNowForm = () => {
                 value={country}
                 onChange={(e) => {
                   const selectedCountry = countries.find(c => c.code === e.target.value);
-                  setCountry(e.target.value);
-                  setCurrency({
-                    code: selectedCountry.currencyCode,
-                    symbol: selectedCountry.currencySymbol
-                  });
+                  if (selectedCountry) {
+                    setCountry(e.target.value);
+                    setCurrency({
+                      code: selectedCountry.currencyCode,
+                      symbol: selectedCountry.currencySymbol
+                    });
+                  }
                 }}
+                label="Country"
               >
-                {countries.map((c) => (
-                  <MenuItem key={c.code} value={c.code}>
-                    <img src={c.flag} alt={c.name} width="20" style={{ marginRight: 8 }} />
-                    {c.name} ({c.currencyCode ? `${c.currencyCode} ${c.currencySymbol || ''}` : 'No Currency'})
-                  </MenuItem>
-                ))}
+                {countries.length > 0 ? (
+                  countries.map((c) => (
+                    <MenuItem key={c.code} value={c.code}>
+                      <Box display="flex" alignItems="center">
+                        {c.flag && (
+                          <img
+                            src={c.flag}
+                            alt={c.name}
+                            width="20"
+                            style={{ marginRight: 8 }}
+                            onError={(e) => {
+                              e.target.src = 'https://flagcdn.com/us.svg'; // Fallback flag
+                            }}
+                          />
+                        )}
+                        <span>
+                          {c.name} ({c.currencyCode ? `${c.currencySymbol || ''} ${c.currencyCode}` : 'No Currency'})
+                        </span>
+                      </Box>
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>Loading countries...</MenuItem>
+                )}
               </Select>
             </FormControl>
           </Grid>
