@@ -67,9 +67,8 @@ const BuyNowForm = () => {
 
 
 
-  const navigate = useNavigate(); // For redirection
+  const navigate = useNavigate();
 
-  // Fetch userId from localStorage on component mount
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     if (userId) {
@@ -80,45 +79,67 @@ const BuyNowForm = () => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        // Add fields parameter to request only needed data
         const response = await fetch("https://restcountries.com/v3.1/all?fields=name,cca2,flags,currencies");
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const data = await response.json();
 
         const countryList = data.map((country) => {
-          const currency = country.currencies ? Object.values(country.currencies)[0] : null;
+          const currencyCode = country.currencies ? Object.keys(country.currencies)[0] : null;
+          const currencySymbol = currencyCode && country.currencies[currencyCode] ? country.currencies[currencyCode].symbol : null;
 
           return {
             code: country.cca2,
             name: country.name.common,
             flag: country.flags?.svg || country.flags?.png || "",
-            currencyCode: currency?.code || "USD", // Default to USD
-            currencySymbol: currency?.symbol || "$", // Default to $
+            currencyCode: currencyCode || "N/A",
+            currencySymbol: currencySymbol || "$",
           };
         });
 
-        // Sort countries alphabetically
         countryList.sort((a, b) => a.name.localeCompare(b.name));
         setCountries(countryList);
       } catch (error) {
         console.error("Error fetching countries:", error);
-        // Set default country list if API fails
-        setCountries([
+
+        const fallbackCountries = [
           {
-            code: 'US',
-            name: 'United States',
-            flag: 'https://flagcdn.com/us.svg',
-            currencyCode: 'USD',
-            currencySymbol: '$'
+            code: "US",
+            name: "United States",
+            flag: "",
+            currencyCode: "USD",
+            currencySymbol: "$"
+          },
+          {
+            code: "IN",
+            name: "India",
+            flag: "",
+            currencyCode: "INR",
+            currencySymbol: "₹"
+          },
+          {
+            code: "GB",
+            name: "United Kingdom",
+            flag: "",
+            currencyCode: "GBP",
+            currencySymbol: "£"
+          },
+          {
+            code: "CA",
+            name: "Canada",
+            flag: "",
+            currencyCode: "CAD",
+            currencySymbol: "C$"
+          },
+          {
+            code: "AU",
+            name: "Australia",
+            flag: "",
+            currencyCode: "AUD",
+            currencySymbol: "A$"
           }
-        ]);
+        ];
+        setCountries(fallbackCountries);
       }
     };
-
     fetchCountries();
   }, []);
 
@@ -388,40 +409,19 @@ const BuyNowForm = () => {
                 value={country}
                 onChange={(e) => {
                   const selectedCountry = countries.find(c => c.code === e.target.value);
-                  if (selectedCountry) {
-                    setCountry(e.target.value);
-                    setCurrency({
-                      code: selectedCountry.currencyCode,
-                      symbol: selectedCountry.currencySymbol
-                    });
-                  }
+                  setCountry(e.target.value);
+                  setCurrency({
+                    code: selectedCountry.currencyCode,
+                    symbol: selectedCountry.currencySymbol
+                  });
                 }}
-                label="Country"
               >
-                {countries.length > 0 ? (
-                  countries.map((c) => (
-                    <MenuItem key={c.code} value={c.code}>
-                      <Box display="flex" alignItems="center">
-                        {c.flag && (
-                          <img
-                            src={c.flag}
-                            alt={c.name}
-                            width="20"
-                            style={{ marginRight: 8 }}
-                            onError={(e) => {
-                              e.target.src = 'https://flagcdn.com/us.svg'; // Fallback flag
-                            }}
-                          />
-                        )}
-                        <span>
-                          {c.name} ({c.currencyCode ? `${c.currencySymbol || ''} ${c.currencyCode}` : 'No Currency'})
-                        </span>
-                      </Box>
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem disabled>Loading countries...</MenuItem>
-                )}
+                {countries.map((c) => (
+                  <MenuItem key={c.code} value={c.code}>
+                    <img src={c.flag} alt={c.name} width="20" style={{ marginRight: 8 }} />
+                    {c.name} ({c.currencyCode ? `${c.currencyCode} ${c.currencySymbol || ''}` : 'No Currency'})
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </Grid>
